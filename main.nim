@@ -15,15 +15,22 @@ proc `[]`(trie: PTrie, key: string): PTrie =
 proc `[]=`(trie: var PTrie, key: string, val: PTrie) =
   trie.children[key] = val
 
-#proc contains(trie: PTrie, prefix: string): bool =
-#  if not prefix:
-#    return true
-#  
-#  head = prefix[0]
-#  tail = prefix[1..]
-#
-#  for c, child in trie.children.pairs():
-#    echo($c)
+proc contains(trie: PTrie, prefix: string): bool =
+  if prefix.len() == 0:
+    return true
+  
+  let head = prefix[0]
+  let tail = prefix[1..prefix.len()]
+
+  for chr, child in trie.children.pairs():
+    echo($chr)
+    if $head == $chr and child.contains(tail):
+      return true
+
+  return false
+
+proc traverse(trie: PTrie):
+  
 
 proc newTrie(value=""): PTrie =
   new result
@@ -36,5 +43,4 @@ when isMainModule:
   trie["a"] = newTrie("a")
 
   let t = trie["a"]
-  echo($trie)
-  echo($t)
+  echo($trie.contains("a"))
