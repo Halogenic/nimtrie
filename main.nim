@@ -16,6 +16,9 @@ proc `[]`(trie: PTrie, key: string): PTrie =
 proc `[]=`(trie: var PTrie, key: string, val: PTrie) =
   trie.children[key] = val
 
+proc hasKey(trie: PTrie, key: string): bool =
+  result = trie.children.hasKey(key)
+
 proc contains(trie: PTrie, prefix: string): bool =
   if prefix.len() == 0:
     return true
@@ -65,7 +68,7 @@ proc trieFromArray(words: openarray[string]): PTrie =
   var curr = result
   for word in words:
     for c in word:
-      if not curr.children.hasKey($c):
+      if not curr.hasKey($c):
         curr.children[$c] = newTrie($c)
 
       curr = curr[$c]
