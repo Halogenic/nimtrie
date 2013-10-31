@@ -1,6 +1,8 @@
 import lists
 import tables
 
+from strutils import splitLines
+
 type
   PTrie* = ref TTrie
   TTrie* = object of TObject
@@ -76,12 +78,8 @@ proc trieFromArray(words: openarray[string]): PTrie =
     curr = result
 
 when isMainModule:
-  var trie = trieFromArray(["like", "list", "lint"])
+  var words = readFile("/usr/share/dict/words").splitLines()
+
+  var trie = trieFromArray(words)
 
   echo($trie.contains("lint"))
-
-  echo($trie.traverse())
-
-  let node = trie.find("lik")
-  if node != nil:
-    echo($node)
