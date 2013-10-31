@@ -9,19 +9,21 @@ type
     value: string
     children: TTable[string, PTrie]
 
-proc `$`(trie: PTrie): string =
+proc `$`*(trie: PTrie): string =
   result = $trie[]
 
-proc `[]`(trie: PTrie, key: string): PTrie =
+proc `[]`*(trie: PTrie, key: string): PTrie =
   result = trie.children[key]
 
-proc `[]=`(trie: var PTrie, key: string, val: PTrie) =
+proc `[]=`*(trie: var PTrie, key: string, val: PTrie) =
   trie.children[key] = val
 
+# does the Trie contain the given key?
 proc hasKey(trie: PTrie, key: string): bool =
   result = trie.children.hasKey(key)
 
-proc contains(trie: PTrie, prefix: string): bool =
+# does the Trie combined with its children contain the given prefix?
+proc contains*(trie: PTrie, prefix: string): bool =
   if prefix.len() == 0:
     return true
   
@@ -34,7 +36,8 @@ proc contains(trie: PTrie, prefix: string): bool =
 
   return false
 
-proc traverse(trie: PTrie, value=""): TDoublyLinkedList[string] =
+# return a list of all fully-formed words under the Trie
+proc traverse*(trie: PTrie, value=""): TDoublyLinkedList[string] =
   result = initDoublyLinkedList[string]()
 
   let prefix = value & trie.value
@@ -46,7 +49,8 @@ proc traverse(trie: PTrie, value=""): TDoublyLinkedList[string] =
   else:
     result.append(prefix)
 
-proc find(trie: PTrie, prefix: string): PTrie =
+# find the node associated with the given prefix or nil if none
+proc find*(trie: PTrie, prefix: string): PTrie =
   if prefix.len() == 0:
     return trie
   
@@ -59,12 +63,14 @@ proc find(trie: PTrie, prefix: string): PTrie =
 
   return nil
 
-proc newTrie(value=""): PTrie =
+# create a new ref to a TTrie
+proc newTrie*(value=""): PTrie =
   new result
   result.value = value
   result.children = tables.initTable[string, PTrie]()
 
-proc trieFromArray(words: openarray[string]): PTrie =
+# create a new ref to a TTrie from an array of words
+proc trieFromArray*(words: openarray[string]): PTrie =
   result = newTrie()
 
   var curr = result
@@ -78,8 +84,8 @@ proc trieFromArray(words: openarray[string]): PTrie =
     curr = result
 
 when isMainModule:
-  var words = readFile("/usr/share/dict/words").splitLines()
+  let words = "/usr/share/dict/words".readFile().splitLines()
 
-  var trie = trieFromArray(words)
+  let trie = trieFromArray(words)
 
   echo($trie.contains("lint"))
