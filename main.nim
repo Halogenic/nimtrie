@@ -1,4 +1,4 @@
-import lists
+
 import tables
 
 from strutils import splitLines
@@ -37,17 +37,17 @@ proc contains*(trie: PTrie, prefix: string): bool =
   return false
 
 # return a list of all fully-formed words under the Trie
-proc traverse*(trie: PTrie, value=""): TDoublyLinkedList[string] =
-  result = initDoublyLinkedList[string]()
+proc traverse*(trie: PTrie, value=""): seq[string] =
+  result = @[]
 
   let prefix = value & trie.value
 
   if trie.children.len() > 0:
     for c, child in trie.children.pairs():
       for word in child.traverse(prefix):
-        result.append(word)
+        result = result & word
   else:
-    result.append(prefix)
+    result = result & prefix
 
 # find the node associated with the given prefix or nil if none
 proc find*(trie: PTrie, prefix: string): PTrie =
